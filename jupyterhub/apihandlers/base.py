@@ -39,8 +39,8 @@ class APIHandler(BaseHandler):
 
         - allow unspecified host/referer (e.g. scripts)
         """
-        host = self.request.headers.get("Host")
-        referer = self.request.headers.get("Referer")
+        host = self.request.headers.get("Host") # jupyterhub-development.sandbox.svc.cluster.local
+        referer = self.request.headers.get("Referer") # https://jupyterhub.medium.sh
 
         # If no header is provided, assume it comes from a script/curl.
         # We are only concerned with cross-site browser stuff here.
@@ -55,9 +55,10 @@ class APIHandler(BaseHandler):
         referer_path = referer.split('://', 1)[-1]
         if not (referer_path + '/').startswith(host_path):
             self.log.warning(
-                "Blocking Cross Origin API request.  Referer: %s, Host: %s",
+                "Blocking Cross Origin API request.  Referer: %s, Host: %s. All headers: %s",
                 referer,
                 host_path,
+                self.request.headers,
             )
             return False
         return True
