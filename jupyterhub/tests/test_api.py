@@ -107,6 +107,28 @@ async def test_referer_check(app):
     )
     assert r.status_code == 200
 
+    app.forwarded_host_header = 'X-Forwarded-Host'
+    r = await api_request(
+        app,
+        'users',
+        headers={
+            'Authorization': '',
+            'Referer': url,
+            'Host': host,
+            'X-Forwarded-Host': 'example.com',
+        },
+        cookies=cookies,
+    )
+    assert r.status_code == 403
+
+    r = await api_request(
+        app,
+        'users',
+        headers={'Authorization': '', 'Referer': url, 'X-Forwarded-Host': host},
+        cookies=cookies,
+    )
+    assert r.status_code == 200
+
 
 # --------------
 # User API tests
