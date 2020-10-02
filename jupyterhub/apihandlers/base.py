@@ -58,7 +58,7 @@ class APIHandler(BaseHandler):
                 "Blocking Cross Origin API request.  Referer: %s, Host: %s. All headers: %s",
                 referer,
                 host_path,
-                "; ".join(self.request.headers.get_all()),
+                "; ".join("=".join(tup) for tup in self.request.headers.get_all()),
             )
             return False
         return True
